@@ -1,42 +1,61 @@
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 
-// Importando suas telas
 import Home from '../screens/home';
-import Favoritos from '../screens/favoritos';
 import Biblioteca from '../screens/biblioteca';
-import DetalheRd2 from '../screens/detalheRd2';
+import Favoritos from '../screens/favoritos';
 
 const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
 
-// 1. Criamos as abas de baixo
-function TabRoutes() {
-  return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
-      <Tab.Screen name="Início" component={Home} />
-      <Tab.Screen name="Favoritos" component={Favoritos} />
-      <Tab.Screen name="Biblioteca" component={Biblioteca} />
-    </Tab.Navigator>
-  );
-}
+const colors = {
+  background: '#0e0e0e',
+  primary: '#ba9eff',
+  inactive: '#71717a',
+};
 
-// 2. Criamos a pilha principal (Stack) que envolve as abas + a tela de detalhe
 export default function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        {/* A primeira tela da pilha são as Abas */}
-        <Stack.Screen 
-          name="MainTabs" 
-          component={TabRoutes} 
-          options={{ headerShown: false }} 
-        />
-        {/* A tela de detalhe fica "escondida" da Tab Bar */}
-        <Stack.Screen name="Detalhe" component={DetalheRd2} />
-      </Stack.Navigator>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarStyle: {
+            backgroundColor: 'rgba(14, 14, 14, 0.95)',
+            borderTopWidth: 0,
+            height: 80,
+            paddingBottom: 20,
+            paddingTop: 10,
+            position: 'absolute',
+          },
+          tabBarActiveTintColor: colors.primary,
+          tabBarInactiveTintColor: colors.inactive,
+          tabBarLabelStyle: {
+            fontSize: 10,
+            fontWeight: '700',
+            textTransform: 'uppercase',
+            letterSpacing: 1,
+          },
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === 'Home') {
+              iconName = focused ? 'home' : 'home-outline';
+            } else if (route.name === 'Biblioteca') {
+              iconName = focused ? 'library' : 'library-outline';
+            } else if (route.name === 'Favoritos') {
+              iconName = focused ? 'heart' : 'heart-outline';
+            }
+
+            return <Ionicons name={iconName} size={24} color={color} />;
+          },
+        })}
+      >
+        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Biblioteca" component={Biblioteca} />
+        <Tab.Screen name="Favoritos" component={Favoritos} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
